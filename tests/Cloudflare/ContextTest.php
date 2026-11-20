@@ -142,6 +142,33 @@ it('does not retain a visitor when Laravel rebinds the request', function (): vo
         ->and(Cloudflare::requestContext()->trusted)->toBeFalse();
 });
 
+it('follows a new request sandbox after the singleton was warmed in the worker container', function (): void {
+    $worker = $this->app;
+    $service = $worker->make(CloudflareService::class);
+    request()->headers->set('CF-IPCountry', 'TH');
+    expect($service->visitor()->countryCode)->toBe('TH');
+
+    $sandbox = new Illuminate\Container\Container();
+    $request = Request::create('/sandbox', server: ['REMOTE_ADDR' => '192.0.2.10']);
+    $request->headers->set('CF-IPCountry', 'US');
+    $sandbox->instance('request', $request);
+    $sandbox->instance('config', new Illuminate\Config\Repository(['cloudflare' => ['trusted_proxies' => ['192.0.2.10']]]));
+
+    try {
+        Illuminate\Container\Container::setInstance($sandbox);
+
+        expect($service->visitor()->countryCode)->toBe('US')
+            ->and($service->requestContext()->trusted)->toBeTrue();
+
+        $sandbox->make('config')->set('cloudflare.trusted_proxies', []);
+
+        expect($service->visitor()->countryCode)->toBeNull()
+            ->and($service->requestContext()->trusted)->toBeFalse();
+    } finally {
+        Illuminate\Container\Container::setInstance($worker);
+    }
+});
+
 it('supports Blade conditionals and escapes location text', function (): void {
     request()->headers->add(['CF-IPCountry' => 'TH', 'CF-Region' => '<script>alert(1)</script>']);
 

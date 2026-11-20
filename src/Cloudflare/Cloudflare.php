@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Moztopia\Cloudflare\Cloudflare;
 
+use Closure;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Http\Request;
 use Moztopia\Cloudflare\Cloudflare\parts\CloudflareHeaders;
@@ -18,10 +19,12 @@ use Symfony\Component\HttpFoundation\IpUtils;
 final class Cloudflare
 {
     /**
-     * Keep the container without retaining request-specific state.
+     * Accept an explicit container or a resolver for the active request sandbox.
+     *
+     * @param Container|Closure $container A container, or a closure returning the active container.
      */
 
-    public function __construct(private readonly Container $container)
+    public function __construct(private readonly Container|Closure $container)
     {
     }
 
@@ -49,8 +52,9 @@ final class Cloudflare
 
     private function headers(): ?CloudflareHeaders
     {
-        $request = $this->container->make('request');
-        $proxies = $this->container->make('config')->get('cloudflare.trusted_proxies', []);
+        $container = $this->container instanceof Closure ? ($this->container)() : $this->container;
+        $request = $container->make('request');
+        $proxies = $container->make('config')->get('cloudflare.trusted_proxies', []);
 
         if (!$request instanceof Request || !is_array($proxies)) {
             return null;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Moztopia\Cloudflare;
 
-use Illuminate\Contracts\Container\Container;
+use Illuminate\Container\Container;
 use Illuminate\Support\ServiceProvider;
 use Moztopia\Cloudflare\Cloudflare\Cloudflare;
 
@@ -22,7 +22,9 @@ final class CloudflareServiceProvider extends ServiceProvider
     {
         $this->mergeConfigFrom(__DIR__.'/../config/cloudflare.php', 'cloudflare');
 
-        $this->app->singleton(Cloudflare::class, fn (Container $app): Cloudflare => new Cloudflare($app));
+        $this->app->singleton(Cloudflare::class, static fn (): Cloudflare => new Cloudflare(
+            static fn (): Container => Container::getInstance(),
+        ));
     }
 
     /**
