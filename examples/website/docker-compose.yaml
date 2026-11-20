@@ -1,0 +1,30 @@
+name: moztopia-cloudflare-example
+
+services:
+  website:
+    container_name: moztopia_cloudflare_example_website
+    build:
+      context: ../..
+      dockerfile: examples/website/.docker/website/website.Dockerfile
+    ports:
+      - "127.0.0.1:${EXAMPLE_PORT:-8080}:8000"
+    environment:
+      APP_NAME: Moztopia Cloudflare Example
+      APP_ENV: production
+      APP_DEBUG: "false"
+      APP_URL: http://localhost:${EXAMPLE_PORT:-8080}
+      CACHE_STORE: array
+      SESSION_DRIVER: array
+      LOG_CHANNEL: stderr
+      CLOUDFLARE_TRUSTED_PROXIES: ${CLOUDFLARE_TRUSTED_PROXIES:-}
+    networks:
+      - appnet
+    healthcheck:
+      test: ["CMD", "php", "-r", "exit(@file_get_contents('http://127.0.0.1:8000/up') === false ? 1 : 0);"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+
+networks:
+  appnet:

@@ -1,0 +1,56 @@
+{
+    "name": "moztopia/cloudflare",
+    "description": "Credential-free Cloudflare visitor and request context for Laravel applications.",
+    "type": "library",
+    "archive": {
+        "exclude": ["/examples"]
+    },
+    "license": "Apache-2.0",
+    "require": {
+        "php": "~8.4.27 || ~8.5.12",
+        "ext-filter": "*",
+        "ext-json": "*",
+        "illuminate/container": "^12.0 || ^13.0",
+        "illuminate/contracts": "^12.0 || ^13.0",
+        "illuminate/http": "^12.0 || ^13.0",
+        "illuminate/support": "^12.0 || ^13.0",
+        "symfony/http-foundation": "^7.2 || ^8.0",
+        "symfony/intl": "^7.2 || ^8.0",
+        "symfony/polyfill-intl-icu": "^1.33"
+    },
+    "require-dev": {
+        "laravel/pint": "^1.25",
+        "orchestra/testbench": "^10.0 || ^11.0",
+        "pestphp/pest": "^4.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Moztopia\\Cloudflare\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Moztopia\\Cloudflare\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": ["Moztopia\\Cloudflare\\CloudflareServiceProvider"],
+            "aliases": {
+                "Cloudflare": "Moztopia\\Cloudflare\\Facades\\Cloudflare"
+            }
+        }
+    },
+    "scripts": {
+        "test": "pest",
+        "lint": "pint --test"
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        },
+        "sort-packages": true
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

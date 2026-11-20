@@ -1,0 +1,13 @@
+{
+    "name": "moztopia-cloudflare-example",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "esbuild resources/ts/example/example.ts --bundle --minify --outdir=public/assets --entry-names=example",
+        "check": "tsc --noEmit"
+    },
+    "devDependencies": {
+        "esbuild": "0.28.2",
+        "typescript": "7.0.2"
+    }
+}
