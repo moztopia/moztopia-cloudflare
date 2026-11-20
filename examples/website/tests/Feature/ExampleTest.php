@@ -69,6 +69,17 @@ it('returns private no-store pages and omits unrelated sensitive headers', funct
         ->and($response->headers->get('Content-Security-Policy'))->toContain("frame-ancestors 'none'");
 });
 
+it('keeps assets and navigation on the public origin behind an HTTPS proxy', function (): void {
+    foreach (['/', '/ui', '/request'] as $path) {
+        $response = $this->withServerVariables(['HTTP_HOST' => 'example.test', 'HTTPS' => 'off'])
+            ->withHeaders(['X-Forwarded-Proto' => 'https'])->get($path)->assertOk();
+
+        $response->assertSee('href="/assets/example.css"', false)
+            ->assertSee('src="/assets/example.js"', false)
+            ->assertDontSee('http://example.test', false);
+    }
+});
+
 it('escapes live metadata and does not infer the interface language from country', function (): void {
     config()->set('cloudflare.trusted_proxies', ['192.0.2.10']);
     $this->withServerVariables(['REMOTE_ADDR' => '192.0.2.10'])

@@ -19,7 +19,7 @@
     </div>
     <div class="secondary-column">
         <x-code.index :code="$snippet"/>
-        <section class="explanation"><h2>{{ __('demo.headers_title') }}</h2><p>{{ __('demo.headers_note') }}</p><a href="{{ route('request', $query) }}">{{ __('demo.inspect_headers') }}</a></section>
+        <section class="explanation"><h2>{{ __('demo.headers_title') }}</h2><p>{{ __('demo.headers_note') }}</p><a href="{{ route('request', $query, false) }}">{{ __('demo.inspect_headers') }}</a></section>
     </div>
 </div>
 @endsection

@@ -6,22 +6,22 @@
     <meta name="color-scheme" content="light dark">
     <meta name="description" content="{{ __('demo.site_description') }}">
     <title>{{ __('demo.page_'.$page) }} · Moztopia Cloudflare</title>
-    <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
-    <link rel="stylesheet" href="{{ asset('assets/example.css') }}">
-    <script src="{{ asset('assets/example.js') }}" defer></script>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/assets/example.css">
+    <script src="/assets/example.js" defer></script>
 </head>
 <body>
 <a class="skip-link" href="#main">{{ __('demo.skip') }}</a>
 <div class="app-shell">
     <aside class="sidebar" id="navigation">
-        <a class="brand" href="{{ route('visitor', $query) }}" aria-label="Moztopia Cloudflare">
+        <a class="brand" href="{{ route('visitor', $query, false) }}" aria-label="Moztopia Cloudflare">
             <span class="brand-symbol"><x-icon.index/></span>
             <span>moztopia<span class="brand-sub">Cloudflare</span></span>
         </a>
         <div class="nav-label">{{ __('demo.explore') }}</div>
         <nav class="main-nav" aria-label="{{ __('demo.navigation') }}">
             @foreach (['visitor' => 'pin', 'ui' => 'layers', 'request' => 'code'] as $destination => $icon)
-                <a href="{{ route($destination, $query) }}" @class(['nav-link', 'active' => $page === $destination]) @if($page === $destination) aria-current="page" @endif>
+                <a href="{{ route($destination, $query, false) }}" @class(['nav-link', 'active' => $page === $destination]) @if($page === $destination) aria-current="page" @endif>
                     <x-icon.index :name="$icon"/>
                     {{ __('demo.page_'.$destination) }}
                 </a>
@@ -45,7 +45,7 @@
                     <summary aria-label="{{ __('demo.language') }}"><span aria-hidden="true">🌐</span> {{ strtoupper(app()->getLocale()) }} <span class="chevron" aria-hidden="true"></span></summary>
                     <div class="language-options">
                         @foreach ($locales as $locale => $name)
-                            <a lang="{{ $locale }}" href="{{ route($page, array_merge($query, ['locale' => $locale])) }}" @if(app()->getLocale() === $locale) aria-current="true" @endif>
+                            <a lang="{{ $locale }}" href="{{ route($page, array_merge($query, ['locale' => $locale]), false) }}" @if(app()->getLocale() === $locale) aria-current="true" @endif>
                                 <span aria-hidden="true">{{ ['en' => '🇬🇧', 'th' => '🇹🇭', 'ar' => '🌐'][$locale] }}</span> {{ $name }}
                                 @if(app()->getLocale() === $locale)<x-icon.index name="check"/>@endif
                             </a>
@@ -68,7 +68,7 @@
                     <span @class(['source-badge', 'simulated' => $simulated, 'live' => !$simulated])>{{ __('demo.'.($simulated ? 'simulated' : 'live')) }}</span>
                     <p>{{ __('demo.'.($simulated ? 'simulated_note' : 'live_note')) }}</p>
                 </div>
-                <form class="scenario-form" action="{{ route($page) }}" method="get" data-scenario-form>
+                <form class="scenario-form" action="{{ route($page, [], false) }}" method="get" data-scenario-form>
                     <input type="hidden" name="locale" value="{{ app()->getLocale() }}">
                     <div class="select-field">
                         <label for="scenario">{{ __('demo.request_source') }}</label>
