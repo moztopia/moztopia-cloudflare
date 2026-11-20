@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ff5461560794bfab33a0556be43cb9d5",
+    "content-hash": "434ec921e78508b4a2e437b72f6e20ed",
     "packages": [
         {
             "name": "brick/math",
@@ -2105,7 +2105,7 @@
         },
         {
             "name": "moztopia/cloudflare",
-            "version": "0.2.0",
+            "version": "0.9.0",
             "dist": {
                 "type": "path",
                 "url": "../.."

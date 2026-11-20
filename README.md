@@ -2,6 +2,8 @@
 
 `moztopia/cloudflare` gives Laravel applications credential-free access to Cloudflare visitor information and request metadata. Use it in controllers, services and Blade without making network requests.
 
+Release **0.9.0 — Cirrus**. The numeric source version is recorded in `VERSION` and the release name in `RELEASE_NAME`.
+
 ```php
 use Moztopia\Cloudflare\Facades\Cloudflare;
 
@@ -33,7 +35,7 @@ All location and metadata values are nullable. Installing the package, resolving
 The repository source version is recorded in `VERSION`. Once the matching version is available through your configured Composer repository:
 
 ```sh
-composer require moztopia/cloudflare:^0.2
+composer require moztopia/cloudflare:^0.9
 php artisan vendor:publish --tag=cloudflare-config
 ```
 
