@@ -30,10 +30,10 @@ All location and metadata values are nullable. Installing the package, resolving
 - PHP 8.4.27+ within the 8.4 line, or 8.5.12+ within the 8.5 line.
 - Cloudflare-proxied traffic through a known, controlled ingress.
 
-This repository is preparing its initial `0.1.0` version. It has not yet published a stable package release. Once that version is available through your configured Composer repository:
+The repository source version is recorded in `VERSION`. Once the matching version is available through your configured Composer repository:
 
 ```sh
-composer require moztopia/cloudflare:^0.1
+composer require moztopia/cloudflare:^0.2
 php artisan vendor:publish --tag=cloudflare-config
 ```
 
@@ -118,6 +118,14 @@ This first version focuses on application-facing context. It does not probe `/cd
 
 ## Development
 
+### Runnable example
+
+The self-contained Laravel example lives in [`examples/website/`](examples/website/README.md). From that directory, run `docker compose up` and open **http://localhost:8080**. It uses PHP 8.5.13 and demonstrates the real package with live-request and simulated-location harnesses, responsive pages, themes and English/Thai/Arabic support.
+
+The example uses a Composer path repository, keeps its own lockfiles and needs no host PHP/Node or external services. It is excluded from package source archives; clone the repository to run it.
+
+### Package checks
+
 ```sh
 composer install
 composer validate --strict
@@ -127,9 +135,9 @@ composer lint
 
 Pest uses Orchestra Testbench with synthetic requests; ordinary tests need no Cloudflare account, live domain or network access. Dependencies and `composer.lock` are not tracked for this library, so each supported framework line should be resolved and tested deliberately. Runnable consuming applications should track their own dependency lockfiles. No CI or publication workflow is configured by this initial package scaffold.
 
-Initial verification exercised Laravel 12.73.0 / Testbench 10.12.0 and Laravel 13.43.0 / Testbench 11.3.0 on both PHP 8.4.27 and 8.5.12. All four combinations passed 38 tests with 84 assertions. Composer validation and Pint also passed. These are synthetic integration checks; a live Cloudflare ingress was not exercised.
+Package verification exercised Laravel 12.73.0 / Testbench 10.12.0 and Laravel 13.43.0 / Testbench 11.3.0 on PHP 8.4.27, 8.5.12 and 8.5.13. Each run passed 39 tests with 89 assertions, including the active-container regression. Composer validation and Pint also passed. These are synthetic integration checks; a live Cloudflare ingress was not exercised.
 
-The canonical prepared source version is in `VERSION`. Integration and publication follow the repository's owning [GitHub Project](https://github.com/orgs/moztopia/projects/67).
+The canonical source version is in `VERSION`. Integration and publication follow the repository's owning [GitHub Project](https://github.com/orgs/moztopia/projects/67).
 
 ## License
 

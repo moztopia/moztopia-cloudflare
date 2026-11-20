@@ -1,0 +1,12 @@
+.git
+vendor
+**/vendor
+**/node_modules
+**/.env
+**/.env.*
+!**/.env.example
+**/storage/logs/*
+**/storage/framework/views/*
+**/storage/framework/cache/data/*
+**/.phpunit.cache
+examples/website/public/assets
