@@ -2,6 +2,9 @@
     "name": "moztopia/cloudflare",
     "description": "Credential-free Cloudflare visitor and request context for Laravel applications.",
     "type": "library",
+    "archive": {
+        "exclude": ["/examples"]
+    },
     "license": "Apache-2.0",
     "require": {
         "php": "~8.4.27 || ~8.5.12",
