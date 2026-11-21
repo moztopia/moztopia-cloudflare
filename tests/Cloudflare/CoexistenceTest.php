@@ -6,6 +6,7 @@ use Illuminate\Config\Repository;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Foundation\Application as ApplicationContract;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Foundation\AliasLoader;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\ServiceProvider;
@@ -16,6 +17,7 @@ it('preserves companion bindings and configuration in either provider order with
     $original = Container::getInstance();
     $publications = ServiceProvider::$publishes;
     $groups = ServiceProvider::$publishGroups;
+    $aliases = AliasLoader::getInstance()->getAliases();
     $base = sys_get_temp_dir().'/moztopia-coexistence-'.bin2hex(random_bytes(8));
     $files = new Filesystem();
     $files->makeDirectory($base.'/config', recursive: true);
@@ -50,6 +52,7 @@ it('preserves companion bindings and configuration in either provider order with
             {
                 $this->mergeConfigFrom($this->source, 'cloudflare');
                 $this->app->singleton('cloudflare', fn (): string => $this->identity);
+                AliasLoader::getInstance()->alias('Cloudflare', 'Example\\ApiFacade');
             }
 
             /**
@@ -74,6 +77,7 @@ it('preserves companion bindings and configuration in either provider order with
         $configuration = $application->make('config');
 
         expect($application->make('cloudflare'))->toBe($companionName)
+            ->and(AliasLoader::getInstance()->getAliases()['Cloudflare'])->toBe('Example\\ApiFacade')
             ->and($configuration->get('cloudflare.api_token'))->toBe('synthetic-companion-token')
             ->and($configuration->get('cloudflare.account_id'))->toBe('synthetic-account')
             ->and($configuration->get('cloudflare.trusted_proxies'))->toBe(['198.51.100.10'])
@@ -86,6 +90,7 @@ it('preserves companion bindings and configuration in either provider order with
         Container::setInstance($original);
         ServiceProvider::$publishes = $publications;
         ServiceProvider::$publishGroups = $groups;
+        AliasLoader::getInstance()->setAliases($aliases);
         $files->deleteDirectory($base);
     }
 })->with(['hampel-like API wrapper', 'ghost-like API wrapper'])->with(['companion first' => true, 'context first' => false]);

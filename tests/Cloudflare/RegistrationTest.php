@@ -14,7 +14,8 @@ it('advertises its provider and facade for Composer discovery', function (): voi
         ->and($composer['license'])->toBe('Apache-2.0')
         ->and($composer['extra']['laravel']['providers'])->toContain(CloudflareServiceProvider::class)
         ->and($composer['extra']['laravel']['aliases']['MoztopiaCloudflare'])->toBe(Moztopia\Cloudflare\Facades\Cloudflare::class)
-        ->and($composer['extra']['laravel']['aliases']['Cloudflare'])->toBe(Moztopia\Cloudflare\Facades\Cloudflare::class)
+        ->and($composer['extra']['laravel']['aliases'])->not->toHaveKey('Cloudflare')
+        ->and(\Cloudflare::getFacadeRoot())->toBe(app(Cloudflare::class))
         ->and(app(Cloudflare::class))->toBeInstanceOf(Cloudflare::class);
 });
 
@@ -46,7 +47,7 @@ it('is discovered by Laravel from installed Composer package metadata', function
 
         expect($manifest->providers())->toContain(CloudflareServiceProvider::class)
             ->and($manifest->aliases()['MoztopiaCloudflare'])->toBe(Moztopia\Cloudflare\Facades\Cloudflare::class)
-            ->and($manifest->aliases()['Cloudflare'])->toBe(Moztopia\Cloudflare\Facades\Cloudflare::class);
+            ->and($manifest->aliases())->not->toHaveKey('Cloudflare');
     } finally {
         $files->deleteDirectory($base);
     }
@@ -136,7 +137,8 @@ it('retains an unambiguous discovery alias alongside companion aliases in either
         $manifest->build();
 
         expect($manifest->providers())->toContain(CloudflareServiceProvider::class, 'Example\\ApiServiceProvider')
-            ->and($manifest->aliases()['MoztopiaCloudflare'])->toBe(Moztopia\Cloudflare\Facades\Cloudflare::class);
+            ->and($manifest->aliases()['MoztopiaCloudflare'])->toBe(Moztopia\Cloudflare\Facades\Cloudflare::class)
+            ->and($manifest->aliases()['Cloudflare'])->toBe('Example\\ApiFacade');
     } finally {
         $files->deleteDirectory($base);
     }

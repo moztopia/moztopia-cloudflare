@@ -26,13 +26,13 @@ abstract class TestCase extends Orchestra
     }
 
     /**
-     * Register the same Blade facade alias advertised to consuming apps.
+     * Register the collision-resistant Blade alias advertised to consuming apps.
      *
      * @return array<string, class-string>
      */
 
     protected function getPackageAliases($app): array
     {
-        return ['MoztopiaCloudflare' => Cloudflare::class, 'Cloudflare' => Cloudflare::class];
+        return ['MoztopiaCloudflare' => Cloudflare::class];
     }
 }

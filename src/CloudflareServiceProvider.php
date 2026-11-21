@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Moztopia\Cloudflare;
 
 use Illuminate\Container\Container;
+use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\ServiceProvider;
 use Moztopia\Cloudflare\Cloudflare\Cloudflare;
+use Moztopia\Cloudflare\Facades\Cloudflare as CloudflareFacade;
 
 /**
  * Register the Cloudflare application API and publishable defaults.
@@ -26,6 +28,25 @@ final class CloudflareServiceProvider extends ServiceProvider
         $this->app->singleton(Cloudflare::class, static fn (): Cloudflare => new Cloudflare(
             static fn (): Container => Container::getInstance(),
         ));
+
+        $this->registerLegacyAlias();
+    }
+
+    /**
+     * Preserve the standalone legacy alias without claiming another facade's name.
+     */
+
+    private function registerLegacyAlias(): void
+    {
+        if (!class_exists(AliasLoader::class)) {
+            return;
+        }
+
+        $loader = AliasLoader::getInstance();
+
+        if (!array_key_exists('Cloudflare', $loader->getAliases()) && !class_exists('Cloudflare', false)) {
+            $loader->alias('Cloudflare', CloudflareFacade::class);
+        }
     }
 
     /**
