@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased — Cirrus
+
+- Add affected-path GitHub Actions checks for the supported PHP/Laravel matrix and consuming example. Resolve Laravel/Testbench lines independently and verify the exact PHP runtime used for tests.
+- Keep Cloudflare live-ingress checks, credentials, artifact publication and deployments outside ordinary synthetic CI. Documentation-only changes skip application builds.
+
 ## 0.9.1 — Cirrus — 2026-11-21
 
 - Make the wiki the authoritative human-facing project guide and shorten the root and example READMEs to entry points. Preserve detailed development, setup and example guidance in the wiki.
