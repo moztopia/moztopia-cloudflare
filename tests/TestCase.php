@@ -33,6 +33,6 @@ abstract class TestCase extends Orchestra
 
     protected function getPackageAliases($app): array
     {
-        return ['Cloudflare' => Cloudflare::class];
+        return ['MoztopiaCloudflare' => Cloudflare::class, 'Cloudflare' => Cloudflare::class];
     }
 }

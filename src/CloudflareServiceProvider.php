@@ -20,6 +20,7 @@ final class CloudflareServiceProvider extends ServiceProvider
 
     public function register(): void
     {
+        $this->mergeConfigFrom(__DIR__.'/../config/moztopia-cloudflare.php', 'moztopia-cloudflare');
         $this->mergeConfigFrom(__DIR__.'/../config/cloudflare.php', 'cloudflare');
 
         $this->app->singleton(Cloudflare::class, static fn (): Cloudflare => new Cloudflare(
@@ -34,6 +35,10 @@ final class CloudflareServiceProvider extends ServiceProvider
     public function boot(): void
     {
         if ($this->app->runningInConsole()) {
+            $this->publishes([
+                __DIR__.'/../config/moztopia-cloudflare.php' => config_path('moztopia-cloudflare.php'),
+            ], 'moztopia-cloudflare-config');
+
             $this->publishes([
                 __DIR__.'/../config/cloudflare.php' => config_path('cloudflare.php'),
             ], 'cloudflare-config');

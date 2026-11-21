@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased — Cirrus
+
+- Add the `MoztopiaCloudflare` facade alias, `moztopia-cloudflare` configuration namespace/file and `moztopia-cloudflare-config` publish tag for explicit coexistence with API-management packages.
+- Preserve existing fully qualified PHP access and legacy configuration/publishing. Explicit namespaced trust settings take precedence, including an empty list; `null` retains legacy fallback and invalid explicit values fail closed. Common legacy aliases/publish tags remain ambiguous when another package claims them; use the canonical identifiers for coexistence.
+- Verify provider/manifest order, configuration caching, canonical publishing, Blade and active-container behavior with synthetic integration tests.
+
 ## 0.9.1 — Cirrus — 2026-11-21
 
 - Make the wiki the authoritative human-facing project guide and shorten the root and example READMEs to entry points. Preserve detailed development, setup and example guidance in the wiki.
