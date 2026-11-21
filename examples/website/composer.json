@@ -20,7 +20,7 @@
             "options": {
                 "symlink": true,
                 "reference": "none",
-                "versions": {"moztopia/cloudflare": "0.9.0"}
+                "versions": {"moztopia/cloudflare": "0.9.1"}
             }
         }
     ],

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.9.1 — Cirrus — 2026-11-21
+
+- Make the wiki the authoritative human-facing project guide and shorten the root and example READMEs to entry points. Preserve detailed development, setup and example guidance in the wiki.
+- Add the tropical Moztopia Cloudflare family logo in root `logo.png` and at the top of the wiki sidebar.
+- Preserve the 0.9.0 runtime API, requirements and ingress contract; no consumer migration is required.
+
 ## 0.9.0 — Cirrus — 2026-11-20
 
 - Promote the first functional package and example website to `main` as the owner-selected Cirrus release.
