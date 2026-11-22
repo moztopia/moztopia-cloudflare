@@ -2,6 +2,7 @@
 
 ## Unreleased — Cirrus
 
+- Verify expanded visitor, request and diagnostic snapshots across IPv4/IPv6 trust boundaries and repeated Laravel kernel/actual Octane worker requests, including native sandbox configuration resets and recovery after a failed request. Keep Octane in development dependencies only; no server transport, credential, automatic trust or runtime policy change is introduced.
 - Add redacted typed request diagnostics and a namespaced local doctor command with JSON output, isolated synthetic checks and native English/Thai/Arabic copy. No public route, raw visitor logging or network probe is installed; configuration guidance does not infer Cloudflare product enablement.
 - Append nullable latitude/longitude floats and string metro codes to trusted visitor snapshots, preserving existing constructor positions. Validate bounded decimal coordinates and numeric identifiers locally; demonstrate coordinates and unknown fallbacks in the localized example without postal-code or geocoding dependencies.
 - Support Laravel-native facade mocking with typed dependency injection while retaining immutable visitor/request snapshots. Add explicit immutable request fixtures for known, absent, malformed and untrusted consumer tests without changing live trust or request state.
