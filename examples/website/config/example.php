@@ -9,16 +9,19 @@ return [
         'bangkok' => ['peer' => '192.0.2.10', 'headers' => [
             'CF-IPCountry' => 'TH', 'CF-IPContinent' => 'AS', 'CF-Region' => 'Bangkok', 'CF-Region-Code' => '10',
             'CF-IPCity' => 'กรุงเทพมหานคร', 'CF-Timezone' => 'Asia/Bangkok',
+            'CF-IPLatitude' => '13.7563', 'CF-IPLongitude' => '100.5018',
             'CF-Connecting-IP' => '203.0.113.42', 'CF-Ray' => '0123456789abcdef-BKK', 'CF-Visitor' => '{"scheme":"https"}',
         ]],
         'london' => ['peer' => '192.0.2.10', 'headers' => [
             'CF-IPCountry' => 'GB', 'CF-IPContinent' => 'EU', 'CF-Region' => 'England', 'CF-Region-Code' => 'ENG',
             'CF-IPCity' => 'London', 'CF-Timezone' => 'Europe/London',
+            'CF-IPLatitude' => '51.5074', 'CF-IPLongitude' => '-0.1278',
             'CF-Connecting-IP' => '203.0.113.43', 'CF-Ray' => '0123456789abcdef-LHR', 'CF-Visitor' => '{"scheme":"https"}',
         ]],
         'dubai' => ['peer' => '192.0.2.10', 'headers' => [
             'CF-IPCountry' => 'AE', 'CF-IPContinent' => 'AS', 'CF-Region' => 'دبي', 'CF-Region-Code' => 'DU',
             'CF-IPCity' => 'دبي', 'CF-Timezone' => 'Asia/Dubai',
+            'CF-IPLatitude' => '25.2048', 'CF-IPLongitude' => '55.2708',
             'CF-Connecting-IP' => '2001:db8::42', 'CF-Ray' => '0123456789abcdef-DXB', 'CF-Visitor' => '{"scheme":"https"}',
         ]],
         'missing' => ['peer' => '192.0.2.10', 'headers' => []],
@@ -27,9 +30,11 @@ return [
         ]],
         'untrusted' => ['peer' => '198.51.100.10', 'headers' => [
             'CF-IPCountry' => 'TH', 'CF-Region' => 'Bangkok', 'CF-Connecting-IP' => '203.0.113.42', 'CF-Visitor' => '{"scheme":"https"}',
+            'CF-IPLatitude' => '13.7563', 'CF-IPLongitude' => '100.5018', 'CF-Metro-Code' => '635',
         ]],
         'malformed' => ['peer' => '192.0.2.10', 'headers' => [
             'CF-IPCountry' => 'ZZ', 'CF-Timezone' => 'Not/A-Timezone', 'CF-Connecting-IP' => 'not-an-ip', 'CF-Ray' => 'invalid', 'CF-Visitor' => 'not-json',
+            'CF-IPLatitude' => '91', 'CF-IPLongitude' => 'NaN', 'CF-Metro-Code' => 'invalid',
         ]],
     ],
 ];

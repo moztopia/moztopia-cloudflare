@@ -44,6 +44,9 @@ final class CloudflareHeaders
             city: $this->text('cf-ipcity'),
             timezone: in_array($timezone, DateTimeZone::listIdentifiers(DateTimeZone::ALL_WITH_BC), true) ? $timezone : null,
             countryMarker: in_array($country, ['XX', 'T1'], true) ? $country : null,
+            latitude: $this->coordinate('cf-iplatitude', 90),
+            longitude: $this->coordinate('cf-iplongitude', 180),
+            metroCode: $this->pattern('cf-metro-code', '/\A[0-9]{1,16}\z/'),
         );
     }
 
@@ -97,5 +100,22 @@ final class CloudflareHeaders
         $value = $this->text($name);
 
         return $value !== null && preg_match($pattern, $value) === 1 ? $value : null;
+    }
+
+    /**
+     * Parse one finite decimal coordinate within its geographic bounds.
+     */
+
+    private function coordinate(string $name, float $limit): ?float
+    {
+        $value = $this->text($name);
+
+        if ($value === null || preg_match('/\A[+-]?(?:[0-9]+(?:\.[0-9]+)?|\.[0-9]+)\z/', $value) !== 1) {
+            return null;
+        }
+
+        $coordinate = (float) $value;
+
+        return is_finite($coordinate) && abs($coordinate) <= $limit ? $coordinate : null;
     }
 }

@@ -13,6 +13,9 @@
                 <x-value.index :label="__('demo.region_code')" :value="$visitor->regionCode" :code="true"/>
                 <x-value.index :label="__('demo.city')" :value="$visitor->city"/>
                 <x-value.index :label="__('demo.timezone')" :value="$visitor->timezone" :code="true"/>
+                <x-value.index :label="__('demo.latitude')" :value="$visitor->latitude" :code="true"/>
+                <x-value.index :label="__('demo.longitude')" :value="$visitor->longitude" :code="true"/>
+                <x-value.index :label="__('demo.metro_code')" :value="$visitor->metroCode" :code="true"/>
             </dl>
         </section>
         <section class="notice"><x-icon.index name="pin"/><div><h2>{{ __('demo.'.($visitor->countryMarker === 'T1' ? 'tor_title' : 'location_note_title')) }}</h2><p>{{ __('demo.'.($visitor->countryMarker === 'T1' ? 'tor_note' : 'location_note')) }}</p></div></section>

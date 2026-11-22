@@ -58,6 +58,9 @@ final class ExampleController
                 $visitor->region;
                 $visitor->city;
                 $visitor->timezone;
+                $visitor->latitude;
+                $visitor->longitude;
+                $visitor->metroCode;
                 PHP,
         };
 
