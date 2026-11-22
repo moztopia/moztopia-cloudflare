@@ -54,7 +54,11 @@ final class Cloudflare
     {
         $container = $this->container instanceof Closure ? ($this->container)() : $this->container;
         $request = $container->make('request');
-        $proxies = $container->make('config')->get('cloudflare.trusted_proxies', []);
+        $configuration = $container->make('config');
+        $settings = $configuration->get('moztopia-cloudflare', []);
+        $proxies = is_array($settings)
+            ? ($settings['trusted_proxies'] ?? $configuration->get('cloudflare.trusted_proxies', []))
+            : null;
 
         if (!$request instanceof Request || !is_array($proxies)) {
             return null;

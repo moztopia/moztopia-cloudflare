@@ -86,6 +86,64 @@ it('supports IPv6 ingress and visitor addresses', function (): void {
         ->and(Cloudflare::requestContext()->clientIp)->toBe('2001:db8:1::2');
 });
 
+it('uses explicit namespaced trust settings before legacy configuration', function (mixed $settings, bool $trusted): void {
+    config()->set('moztopia-cloudflare', $settings);
+    request()->headers->set('CF-IPCountry', 'TH');
+
+    expect(Cloudflare::requestContext()->trusted)->toBe($trusted)
+        ->and(Cloudflare::visitor()->countryCode)->toBe($trusted ? 'TH' : null);
+})->with([
+    'explicit trusted peer' => [['trusted_proxies' => ['192.0.2.10']], true],
+    'explicit different peer' => [['trusted_proxies' => ['198.51.100.10']], false],
+    'explicit empty list disables legacy trust' => [['trusted_proxies' => []], false],
+    'null preserves legacy trust' => [['trusted_proxies' => null], true],
+    'missing key preserves legacy trust' => [[], true],
+    'invalid explicit list fails closed' => [['trusted_proxies' => '*'], false],
+    'invalid explicit namespace fails closed' => ['*', false],
+    'explicit wildcard does not enable legacy trust' => [['trusted_proxies' => ['*']], false],
+]);
+
+it('does not fall back from invalid namespaced configuration to a trusted legacy peer', function (): void {
+    config()->set('moztopia-cloudflare.trusted_proxies', false);
+    request()->headers->set('CF-IPCountry', 'TH');
+
+    expect(Cloudflare::requestContext()->trusted)->toBeFalse()
+        ->and(Cloudflare::visitor()->countryCode)->toBeNull();
+});
+
+it('reads namespaced settings again after the active request container changes', function (): void {
+    $worker = $this->app;
+    $service = app(CloudflareService::class);
+    request()->headers->set('CF-IPCountry', 'TH');
+    expect($service->visitor()->countryCode)->toBe('TH');
+
+    $sandbox = new Illuminate\Container\Container();
+    $request = Request::create('/sandbox', server: ['REMOTE_ADDR' => '192.0.2.10']);
+    $request->headers->set('CF-IPCountry', 'US');
+    $sandbox->instance('request', $request);
+    $sandbox->instance('config', new Illuminate\Config\Repository([
+        'moztopia-cloudflare' => ['trusted_proxies' => []],
+        'cloudflare' => ['trusted_proxies' => ['192.0.2.10']],
+    ]));
+
+    try {
+        Illuminate\Container\Container::setInstance($sandbox);
+        expect($service->visitor()->countryCode)->toBeNull();
+
+        $sandbox->make('config')->set('moztopia-cloudflare.trusted_proxies', ['192.0.2.10']);
+        expect($service->visitor()->countryCode)->toBe('US');
+    } finally {
+        Illuminate\Container\Container::setInstance($worker);
+    }
+});
+
+it('supports the namespaced Blade alias', function (): void {
+    config()->set('moztopia-cloudflare.trusted_proxies', ['192.0.2.10']);
+    request()->headers->set('CF-IPCountry', 'TH');
+
+    expect(Blade::render('{{ MoztopiaCloudflare::visitor()->countryCode }}'))->toBe('TH');
+});
+
 it('preserves Cloudflare country markers without inventing a country', function (string $marker): void {
     request()->headers->set('CF-IPCountry', $marker);
 

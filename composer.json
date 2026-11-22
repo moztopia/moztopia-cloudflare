@@ -37,7 +37,7 @@
         "laravel": {
             "providers": ["Moztopia\\Cloudflare\\CloudflareServiceProvider"],
             "aliases": {
-                "Cloudflare": "Moztopia\\Cloudflare\\Facades\\Cloudflare"
+                "MoztopiaCloudflare": "Moztopia\\Cloudflare\\Facades\\Cloudflare"
             }
         }
     },
