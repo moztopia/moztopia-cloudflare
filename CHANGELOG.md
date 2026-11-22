@@ -2,6 +2,8 @@
 
 ## Unreleased — Cirrus
 
+- Check dependent issue PRs and combined phase branches in the owner-approved grouped integration workflow.
+
 - Add affected-path GitHub Actions checks for the supported PHP/Laravel matrix and consuming example. Resolve Laravel/Testbench lines independently and verify the exact PHP runtime used for tests.
 - Keep Cloudflare live-ingress checks, credentials, artifact publication and deployments outside ordinary synthetic CI. Documentation-only changes skip application builds.
 
