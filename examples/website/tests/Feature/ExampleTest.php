@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Services\ExampleHarness;
 use Illuminate\Support\Facades\Http;
 use Moztopia\Cloudflare\Facades\Cloudflare;
+use Moztopia\Cloudflare\RequestFixture\RequestFixture;
 
 it('renders the three real application pages with no outbound requests', function (string $path, string $heading): void {
     Http::preventStrayRequests();
@@ -41,6 +42,22 @@ it('uses the actual connection trust policy in live mode', function (): void {
         ->withHeaders(['CF-IPCountry' => 'GB'])
         ->get('/?scenario=live')->assertOk()->assertSee('United Kingdom');
 });
+
+it('uses public request fixtures for real application UI and unknown fallbacks', function (string $scenario, string $expected): void {
+    Http::preventStrayRequests();
+    $fixture = RequestFixture::{$scenario}();
+    config()->set('moztopia-cloudflare.trusted_proxies', $fixture->trustedProxies);
+
+    $this->withServerVariables($fixture->server)->withHeaders($fixture->headers)
+        ->get('/ui?scenario=live')->assertOk()->assertSee($expected);
+
+    Http::assertNothingSent();
+})->with([
+    'known country' => ['trusted', 'Delivery within Thailand'],
+    'missing headers' => ['missing', 'Explore our delivery destinations'],
+    'malformed headers' => ['malformed', 'Explore our delivery destinations'],
+    'untrusted ingress' => ['untrusted', 'Explore our delivery destinations'],
+]);
 
 it('keeps malformed and untrusted scenarios unknown', function (string $scenario): void {
     $state = app(ExampleHarness::class)->run($scenario, request());

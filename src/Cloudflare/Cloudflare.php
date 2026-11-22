@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\IpUtils;
  * Expose credential-free Cloudflare information from the active request.
  */
 
-final class Cloudflare
+class Cloudflare
 {
     /**
      * Accept an explicit container or a resolver for the active request sandbox.
