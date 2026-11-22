@@ -8,9 +8,12 @@ use Closure;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Http\Request;
 use Moztopia\Cloudflare\Cloudflare\parts\CloudflareHeaders;
+use Moztopia\Cloudflare\Cloudflare\parts\CloudflareTrust;
+use Moztopia\Cloudflare\Diagnostics\Diagnostics;
+use Moztopia\Cloudflare\IngressStatus\IngressStatus;
 use Moztopia\Cloudflare\RequestContext\RequestContext;
 use Moztopia\Cloudflare\Visitor\Visitor;
-use Symfony\Component\HttpFoundation\IpUtils;
+use Symfony\Component\HttpFoundation\HeaderBag;
 
 /**
  * Expose credential-free Cloudflare information from the active request.
@@ -47,54 +50,39 @@ class Cloudflare
     }
 
     /**
+     * Explain current availability with redacted local status snapshots only.
+     */
+
+    public function diagnostics(): Diagnostics
+    {
+        $container = $this->activeContainer();
+        $trust = new CloudflareTrust($container->make('config'));
+        $request = $container->bound('request') ? $container->make('request') : null;
+        $ingress = $trust->ingress($request);
+        $headers = new CloudflareHeaders($request instanceof Request ? $request->headers : new HeaderBag());
+
+        return new Diagnostics($ingress, $headers->diagnostics($ingress === IngressStatus::Trusted), $trust->issues());
+    }
+
+    /**
      * Accept headers only from explicitly configured immediate ingress peers.
      */
 
     private function headers(): ?CloudflareHeaders
     {
-        $container = $this->container instanceof Closure ? ($this->container)() : $this->container;
-        $request = $container->make('request');
-        $configuration = $container->make('config');
-        $settings = $configuration->get('moztopia-cloudflare', []);
-        $proxies = is_array($settings)
-            ? ($settings['trusted_proxies'] ?? $configuration->get('cloudflare.trusted_proxies', []))
-            : null;
+        $container = $this->activeContainer();
+        $request = $container->bound('request') ? $container->make('request') : null;
+        $trust = new CloudflareTrust($container->make('config'));
 
-        if (!$request instanceof Request || !is_array($proxies)) {
-            return null;
-        }
-
-        $peer = $request->server->get('REMOTE_ADDR');
-
-        if (!is_string($peer) || filter_var($peer, FILTER_VALIDATE_IP) === false) {
-            return null;
-        }
-
-        foreach ($proxies as $proxy) {
-            if (is_string($proxy) && $this->matchesProxy($peer, $proxy)) {
-                return new CloudflareHeaders($request->headers);
-            }
-        }
-
-        return null;
+        return $trust->ingress($request) === IngressStatus::Trusted ? new CloudflareHeaders($request->headers) : null;
     }
 
     /**
-     * Reject invalid ingress configuration before checking an IP or CIDR range.
+     * Resolve the current Laravel sandbox instead of retaining a worker container.
      */
 
-    private function matchesProxy(string $peer, string $proxy): bool
+    private function activeContainer(): Container
     {
-        $parts = explode('/', $proxy);
-
-        if (count($parts) > 2 || filter_var($parts[0], FILTER_VALIDATE_IP) === false) {
-            return false;
-        }
-
-        if (isset($parts[1]) && preg_match('/\A[0-9]{1,3}\z/', $parts[1]) !== 1) {
-            return false;
-        }
-
-        return IpUtils::checkIp($peer, $proxy);
+        return $this->container instanceof Closure ? ($this->container)() : $this->container;
     }
 }

@@ -6,6 +6,7 @@ namespace Moztopia\Cloudflare\Facades;
 
 use Illuminate\Support\Facades\Facade;
 use Moztopia\Cloudflare\Cloudflare\Cloudflare as CloudflareService;
+use Moztopia\Cloudflare\Diagnostics\Diagnostics;
 use Moztopia\Cloudflare\RequestContext\RequestContext;
 use Moztopia\Cloudflare\Visitor\Visitor;
 
@@ -14,6 +15,7 @@ use Moztopia\Cloudflare\Visitor\Visitor;
  *
  * @method static Visitor visitor()
  * @method static RequestContext requestContext()
+ * @method static Diagnostics diagnostics()
  *
  * @see CloudflareService
  */

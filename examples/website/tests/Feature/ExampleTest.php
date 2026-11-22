@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Services\ExampleHarness;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Artisan;
 use Moztopia\Cloudflare\Facades\Cloudflare;
 use Moztopia\Cloudflare\RequestFixture\RequestFixture;
 
@@ -12,6 +13,19 @@ it('renders the three real application pages with no outbound requests', functio
     $this->get($path)->assertOk()->assertSee($heading)->assertSee('Simulated scenario')->assertSee('TH');
     Http::assertNothingSent();
 })->with([['/', 'Visitor context'], ['/ui', 'UI examples'], ['/request', 'Request inspector']]);
+
+it('ships the package doctor and catalogs in the real consuming application', function (): void {
+    Http::preventStrayRequests();
+    expect(Artisan::call('moztopia-cloudflare:doctor', ['--json' => true]))->toBe(0);
+    $report = json_decode(Artisan::output(), true, flags: JSON_THROW_ON_ERROR);
+    expect($report['liveRequestObserved'])->toBeFalse()
+        ->and($report['syntheticChecksPassed'])->toBeTrue();
+
+    expect(Artisan::call('moztopia-cloudflare:doctor'))->toBe(0)
+        ->and(Artisan::output())->toContain('Moztopia Cloudflare local diagnostics', 'No live browser request has been observed.')
+        ->and(Artisan::output())->not->toContain('moztopia-cloudflare::doctor.');
+    Http::assertNothingSent();
+});
 
 it('renders all scenarios on every page', function (string $scenario): void {
     foreach (['/', '/ui', '/request'] as $path) {
