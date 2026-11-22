@@ -10,6 +10,7 @@ FROM composer:2 AS dependencies
 WORKDIR /workspace/package
 COPY composer.json VERSION LICENSE ./
 COPY src ./src
+COPY lang ./lang
 COPY config ./config
 WORKDIR /workspace/package/examples/website
 COPY examples/website/composer.json examples/website/composer.lock ./
@@ -20,6 +21,7 @@ COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
 WORKDIR /workspace/package
 COPY composer.json VERSION LICENSE ./
 COPY src ./src
+COPY lang ./lang
 COPY config ./config
 WORKDIR /workspace/package/examples/website
 COPY examples/website ./

@@ -8,6 +8,7 @@ use Illuminate\Container\Container;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\ServiceProvider;
 use Moztopia\Cloudflare\Cloudflare\Cloudflare;
+use Moztopia\Cloudflare\Commands\DoctorCommand\DoctorCommand;
 use Moztopia\Cloudflare\Facades\Cloudflare as CloudflareFacade;
 
 /**
@@ -55,7 +56,11 @@ final class CloudflareServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        $this->loadTranslationsFrom(__DIR__.'/../lang', 'moztopia-cloudflare');
+
         if ($this->app->runningInConsole()) {
+            $this->commands([DoctorCommand::class]);
+
             $this->publishes([
                 __DIR__.'/../config/moztopia-cloudflare.php' => config_path('moztopia-cloudflare.php'),
             ], 'moztopia-cloudflare-config');

@@ -7,6 +7,7 @@ namespace Moztopia\Cloudflare\Cloudflare\parts;
 use DateTimeZone;
 use Moztopia\Cloudflare\RequestContext\RequestContext;
 use Moztopia\Cloudflare\Visitor\Visitor;
+use Moztopia\Cloudflare\HeaderStatus\HeaderStatus;
 use Symfony\Component\HttpFoundation\HeaderBag;
 use Symfony\Component\Intl\Countries;
 
@@ -18,6 +19,17 @@ use Symfony\Component\Intl\Countries;
 
 final class CloudflareHeaders
 {
+    /**
+     * Name the headers implemented by the credential-free local parser.
+     *
+     * @var list<string>
+     */
+
+    private const HEADERS = [
+        'cf-ipcountry', 'cf-ipcontinent', 'cf-region', 'cf-region-code', 'cf-ipcity', 'cf-timezone',
+        'cf-iplatitude', 'cf-iplongitude', 'cf-metro-code', 'cf-connecting-ip', 'cf-ray', 'cf-visitor',
+    ];
+
     /**
      * Keep the headers for this individual context read.
      */
@@ -66,6 +78,45 @@ final class CloudflareHeaders
             rayId: $this->pattern('cf-ray', '/\A[a-fA-F0-9]{16,32}-[A-Z]{3}\z/'),
             scheme: in_array($scheme, ['http', 'https'], true) ? $scheme : null,
         );
+    }
+
+    /**
+     * Describe supported headers without returning or parsing untrusted values.
+     *
+     * @return array<string, HeaderStatus>
+     */
+
+    public function diagnostics(bool $trusted): array
+    {
+        if (!$trusted) {
+            return array_fill_keys(self::HEADERS, HeaderStatus::Untrusted);
+        }
+
+        $visitor = $this->visitor();
+        $context = $this->requestContext();
+        $parsed = [
+            'cf-ipcountry' => $visitor->countryCode !== null || $visitor->countryMarker !== null,
+            'cf-ipcontinent' => $visitor->continentCode !== null,
+            'cf-region' => $visitor->region !== null,
+            'cf-region-code' => $visitor->regionCode !== null,
+            'cf-ipcity' => $visitor->city !== null,
+            'cf-timezone' => $visitor->timezone !== null,
+            'cf-iplatitude' => $visitor->latitude !== null,
+            'cf-iplongitude' => $visitor->longitude !== null,
+            'cf-metro-code' => $visitor->metroCode !== null,
+            'cf-connecting-ip' => $context->clientIp !== null,
+            'cf-ray' => $context->rayId !== null,
+            'cf-visitor' => $context->scheme !== null,
+        ];
+        $statuses = [];
+
+        foreach (self::HEADERS as $name) {
+            $statuses[$name] = !$this->headers->has($name)
+                ? HeaderStatus::Missing
+                : ($parsed[$name] ? HeaderStatus::Parsed : HeaderStatus::Rejected);
+        }
+
+        return $statuses;
     }
 
     /**

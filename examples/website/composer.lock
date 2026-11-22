@@ -2113,6 +2113,8 @@
             "require": {
                 "ext-filter": "*",
                 "ext-json": "*",
+                "illuminate/config": "^12.0 || ^13.0",
+                "illuminate/console": "^12.0 || ^13.0",
                 "illuminate/container": "^12.0 || ^13.0",
                 "illuminate/contracts": "^12.0 || ^13.0",
                 "illuminate/http": "^12.0 || ^13.0",

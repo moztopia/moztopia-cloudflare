@@ -47,7 +47,7 @@ jobs:
               case "$path" in
                 *.md)
                   ;;
-                src/*|config/*|tests/*|composer.json|composer.lock|phpunit.xml|pint.json|.github/workflows/ci.yaml)
+                src/*|config/*|lang/*|tests/*|composer.json|composer.lock|phpunit.xml|pint.json|.github/workflows/ci.yaml)
                   package=true
                   example=true
                   ;;

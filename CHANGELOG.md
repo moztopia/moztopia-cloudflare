@@ -2,6 +2,7 @@
 
 ## Unreleased — Cirrus
 
+- Add redacted typed request diagnostics and a namespaced local doctor command with JSON output, isolated synthetic checks and native English/Thai/Arabic copy. No public route, raw visitor logging or network probe is installed; configuration guidance does not infer Cloudflare product enablement.
 - Append nullable latitude/longitude floats and string metro codes to trusted visitor snapshots, preserving existing constructor positions. Validate bounded decimal coordinates and numeric identifiers locally; demonstrate coordinates and unknown fallbacks in the localized example without postal-code or geocoding dependencies.
 - Support Laravel-native facade mocking with typed dependency injection while retaining immutable visitor/request snapshots. Add explicit immutable request fixtures for known, absent, malformed and untrusted consumer tests without changing live trust or request state.
 - Add the `MoztopiaCloudflare` facade alias, `moztopia-cloudflare` configuration namespace/file and `moztopia-cloudflare-config` publish tag for explicit coexistence with API-management packages.

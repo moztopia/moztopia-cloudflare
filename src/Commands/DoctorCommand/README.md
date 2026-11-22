@@ -1,0 +1,5 @@
+# DoctorCommand
+
+Run `php artisan moztopia-cloudflare:doctor` in a bootable Laravel application. It reports the effective canonical/legacy configuration source, entry count and redacted issue codes, then exercises the real parser in four explicit isolated request fixtures. Empty trust is safe/default and produces guidance; invalid or unrestricted configuration produces exit code 1. Successful synthetic checks do not verify real Cloudflare ingress or product enablement.
+
+`--json` returns schema version 1 with locale-independent codes, `liveRequestObserved: false`, redacted configuration and sample reports. No raw proxy/header/visitor values are printed and the active application request/configuration is preserved. Human output uses the host's translator/fallback and `moztopia-cloudflare::doctor` catalogs; package translations do not enable languages or change locale. Application overrides follow Laravel's normal `lang/vendor/moztopia-cloudflare/<locale>/doctor.php` mechanism. The wiki owns user setup and verification guidance.
