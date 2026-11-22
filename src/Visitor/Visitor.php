@@ -24,6 +24,9 @@ final readonly class Visitor
         public ?string $city = null,
         public ?string $timezone = null,
         public ?string $countryMarker = null,
+        public ?float $latitude = null,
+        public ?float $longitude = null,
+        public ?string $metroCode = null,
     ) {
     }
 }

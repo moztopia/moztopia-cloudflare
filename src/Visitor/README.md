@@ -1,3 +1,5 @@
 # Visitor
 
 `Moztopia\Cloudflare\Visitor\Visitor` is an immutable location snapshot returned by `Cloudflare::visitor()`. Its nullable properties are documented in the [wiki field reference](https://github.com/moztopia/moztopia-cloudflare/wiki/Visitor-and-request-context). `countryMarker` preserves Cloudflare's `XX` and `T1` values without treating them as countries. Focused consumer tests live in `tests/Cloudflare/`.
+
+The appended `latitude`/`longitude` properties are nullable floats parsed from bounded decimal header strings, within ±90/±180 inclusive. Zero is a valid value; use `!== null` in UI conditions. `metroCode` is a nullable numeric identifier string (1–16 digits), retaining leading zeroes. The limit is this package's defensive validation bound, not a claimed Cloudflare wire limit. Existing constructor positions remain unchanged. These are approximate IP-derived values; no coordinates, metro data or postal codes are inferred through lookups. Rich headers depend on Cloudflare's visitor-location Managed Transform and trusted ingress. This addition remains unreleased until the core integration.

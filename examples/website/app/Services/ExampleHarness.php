@@ -48,7 +48,7 @@ final class ExampleHarness
 
         $headers = [];
 
-        foreach (['CF-IPCountry', 'CF-IPContinent', 'CF-Region', 'CF-Region-Code', 'CF-IPCity', 'CF-Timezone', 'CF-Connecting-IP', 'CF-Ray', 'CF-Visitor'] as $name) {
+        foreach (['CF-IPCountry', 'CF-IPContinent', 'CF-Region', 'CF-Region-Code', 'CF-IPCity', 'CF-Timezone', 'CF-IPLatitude', 'CF-IPLongitude', 'CF-Metro-Code', 'CF-Connecting-IP', 'CF-Ray', 'CF-Visitor'] as $name) {
             $headers[$name] = $source->headers->get($name);
         }
 

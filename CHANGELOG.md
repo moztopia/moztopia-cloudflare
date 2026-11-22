@@ -2,6 +2,7 @@
 
 ## Unreleased — Cirrus
 
+- Append nullable latitude/longitude floats and string metro codes to trusted visitor snapshots, preserving existing constructor positions. Validate bounded decimal coordinates and numeric identifiers locally; demonstrate coordinates and unknown fallbacks in the localized example without postal-code or geocoding dependencies.
 - Support Laravel-native facade mocking with typed dependency injection while retaining immutable visitor/request snapshots. Add explicit immutable request fixtures for known, absent, malformed and untrusted consumer tests without changing live trust or request state.
 - Add the `MoztopiaCloudflare` facade alias, `moztopia-cloudflare` configuration namespace/file and `moztopia-cloudflare-config` publish tag for explicit coexistence with API-management packages.
 - Preserve existing fully qualified PHP access and legacy configuration/publishing. Offer the standalone legacy `Cloudflare` alias only when no existing alias or class claims it, leaving another package's facade untouched. Explicit namespaced trust settings take precedence, including an empty list; `null` retains legacy fallback and invalid explicit values fail closed. Use the canonical publishing tag to avoid common-tag collisions.

@@ -72,6 +72,35 @@ it('preserves Tor markers', function (): void {
     $this->get('/?scenario=tor')->assertOk()->assertSee('Tor marker received');
 });
 
+it('shows supplied coordinates and translated geography labels', function (string $locale, string $latitude, string $longitude, string $metro): void {
+    $this->get('/?scenario=bangkok&locale='.$locale)->assertOk()
+        ->assertSee($latitude)->assertSee($longitude)->assertSee($metro)
+        ->assertSee('13.7563')->assertSee('100.5018');
+    $this->get('/request?scenario=bangkok&locale='.$locale)->assertOk()
+        ->assertSee('CF-IPLatitude')->assertSee('CF-IPLongitude')->assertSee('CF-Metro-Code');
+})->with([
+    ['en', 'Latitude', 'Longitude', 'Metro code'],
+    ['th', 'ละติจูด', 'ลองจิจูด', 'รหัสเขตมหานคร'],
+    ['ar', 'خط العرض', 'خط الطول', 'رمز المنطقة الحضرية'],
+]);
+
+it('keeps missing malformed and untrusted geographic fields unknown in the example', function (string $scenario): void {
+    $state = app(ExampleHarness::class)->run($scenario, request());
+
+    expect($state['visitor']->latitude)->toBeNull()
+        ->and($state['visitor']->longitude)->toBeNull()
+        ->and($state['visitor']->metroCode)->toBeNull();
+    $this->get('/?scenario='.$scenario)->assertOk()->assertDontSee('13.7563');
+})->with(['missing', 'malformed', 'untrusted']);
+
+it('shows zero coordinates and preserves the metro identifier in the actual UI', function (): void {
+    $fixture = RequestFixture::trusted(['CF-IPLatitude' => '0', 'CF-IPLongitude' => '0', 'CF-Metro-Code' => '0635']);
+    config()->set('moztopia-cloudflare.trusted_proxies', $fixture->trustedProxies);
+
+    $this->withServerVariables($fixture->server)->withHeaders($fixture->headers)
+        ->get('/?scenario=live')->assertOk()->assertSee('<bdi>0</bdi>', false)->assertSee('0635');
+});
+
 it('changes application examples with country and timezone context', function (): void {
     $this->get('/ui?scenario=bangkok')->assertOk()->assertSee('Delivery within Thailand')->assertSee('19:00');
     $this->get('/ui?scenario=london')->assertOk()->assertSee('Delivery across the United Kingdom')->assertSee('12:00');
